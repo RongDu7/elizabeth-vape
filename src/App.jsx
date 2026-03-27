@@ -91,8 +91,21 @@ function FlavorGrid({ flavors, outOfStock = [] }) {
   );
 }
 
-// Product hero image with gradient fallback
-function ProductHero({ gradient, emoji, label }) {
+// Product hero image with real image support
+function ProductHero({ gradient, emoji, label, img }) {
+  if (img) {
+    return (
+      <div style={{
+        borderRadius: 16, height: 220, marginBottom: 20,
+        overflow: "hidden", position: "relative",
+      }}>
+        <img src={img} alt={label} style={{
+          width: "100%", height: "100%", objectFit: "cover",
+          display: "block",
+        }} />
+      </div>
+    );
+  }
   return (
     <div style={{
       background: gradient || gradTeal,
@@ -126,29 +139,36 @@ function DetailHeader({ name, cash, card, promo, note, tag }) {
 }
 
 // Clickable vape product card
-function VapeCard({ name, cash, card, tag, onClick }) {
+function VapeCard({ name, cash, card, tag, onClick, img }) {
   return (
     <div onClick={onClick} style={{
-      background: T.white, borderRadius: 12, padding: "16px 18px",
+      background: T.white, borderRadius: 12,
       boxShadow: T.shadow, cursor: "pointer", transition: "all 0.15s",
-      display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
+      overflow: "hidden",
     }}
       onMouseEnter={e => { e.currentTarget.style.boxShadow = T.shadowHover; e.currentTarget.style.transform = "translateY(-2px)"; }}
       onMouseLeave={e => { e.currentTarget.style.boxShadow = T.shadow; e.currentTarget.style.transform = "translateY(0)"; }}
     >
-      <div style={{ flex: 1 }}>
-        <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap" }}>
-          {tag && (
-            <span style={{
-              background: tag === "NEW" ? T.teal : "#e53935",
-              color: "#fff", fontSize: 10, fontWeight: 800, borderRadius: 5, padding: "2px 7px",
-            }}>{tag}</span>
-          )}
-          <span style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{name}</span>
+      {img && (
+        <div style={{ height: 160, overflow: "hidden", background: "#eee" }}>
+          <img src={img} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         </div>
-        {(cash || card) && <PriceTag cash={cash} card={card} />}
+      )}
+      <div style={{ padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap" }}>
+            {tag && (
+              <span style={{
+                background: tag === "NEW" ? T.teal : "#e53935",
+                color: "#fff", fontSize: 10, fontWeight: 800, borderRadius: 5, padding: "2px 7px",
+              }}>{tag}</span>
+            )}
+            <span style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{name}</span>
+          </div>
+          {(cash || card) && <PriceTag cash={cash} card={card} />}
+        </div>
+        <span style={{ color: T.teal, fontSize: 20, fontWeight: 700 }}>›</span>
       </div>
-      <span style={{ color: T.teal, fontSize: 20, fontWeight: 700 }}>›</span>
     </div>
   );
 }
@@ -215,7 +235,7 @@ function ClearancePage() {
   ];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #e53935, #ff7043)" emoji="🏷️" label="BIG SALE" />
+      <ProductHero img="/img-clearance.png" label="BIG SALE" />
       {sections.map((s, si) => (
         <div key={si} style={{ marginBottom: 24 }}>
           <div style={{ background: gradTeal, borderRadius: 10, padding: "14px 18px", marginBottom: 10, color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -245,7 +265,7 @@ function IngotPage() {
   const oos = ["Black Forest"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #b8860b, #daa520, #f5a623)" emoji="🟡" label="INGOT 9000" />
+      <ProductHero img="/img-ingot.webp" label="INGOT 9000" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="ALI BARBAR – INGOT 9000" cash="$43" card="$48" />
       <StockInfo available={30} outOfStock={1} />
@@ -258,7 +278,7 @@ function IceAdjustPage() {
   const flavors = ["Black Dragon","Blackberry","Blueberry Blast","Blueberry Watermelon","Chupppa Chupps Strawberry","Grapefruit Guava Lemon","Hubba Bubba Grape","Lady Killer","Lemon Lime","Mango Magic","Passion Fruit Mango Lime","Pineapple Coconut","Skittles","Strawberry Kiwi","Watermelon"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #1a237e, #283593, #00b4b4)" emoji="🌊" label="ICE ADJUST 12000" />
+      <ProductHero img="/img-iceadjust.webp" label="ICE ADJUST 12000" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="ALI BARBAR – ICE ADJUST 12000" cash="$45" card="$50" />
       <StockInfo available={15} />
@@ -271,7 +291,7 @@ function IgetBarProPage() {
   const flavors = ["Blackberry Ice","Blackberry Kiwi Ice","Blackberry Pomegranate Cherry","Blackberry Yogurt Ice Berry","Blueberry Ice","Blueberry Raspberry","Blueberry Raspberry Bubble Gum","Cherry Pomegranate","Chupa Chups Grape","Chupa Chups Strawberry","Dynamic Mint","Fruity Skittles","Grape Ice","Grapefruit Guava Lemon Ice","Kiwi Pineapple","Mango Ice","Orange Fanta Soda","Passion Fruit Peach Iced Tea","Raspberry Cherry Blackberry","Raspberry Grape","Raspberry Pomegranate Ice Blast","Strawberry Cranberry Bliss","Strawberry Kiwi Ice","Strawberry Passion Fruit Mango","Strawberry Raspberry","Strawberry Watermelon Ice","Strawberry White Peach Ice Mist"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #4a148c, #7b1fa2, #e91e63)" emoji="🚀" label="IGET BAR PRO" />
+      <ProductHero img="/img-igetbarpro.jpg" label="IGET BAR PRO" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="IGET BAR PRO – 10000 PUFFS" cash="$43" card="$48" />
       <StockInfo available={27} />
@@ -284,7 +304,7 @@ function IgetOnePage() {
   const flavors = ["Black Forest","Blackberry Cherry Pomegranate","Blackberry Ice","Blue Monster","Blueberry Ice","Blueberry Raspberry","Cherry Monster","Cherry Pomegranate","Chupa Chups Grape","Chupa Chups Strawberry","Chuppa Chupps Blackberry","Grape Ice","Kiwi Pineapple","Mixed Berries Ice","Mountain Spring Mint Ice","Raspberry Grape Ice","Strawberry","Chuppa Chupps Cherry","Strawberry Kiwi Ice","Strawberry Pomegranate Ice","Strawberry Raspberry","Strawberry Watermelon Ice","Tropical Orange Monster"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #006064, #00838f, #26c6da)" emoji="💎" label="IGET ONE 12000" />
+      <ProductHero img="/img-igetone.webp" label="IGET ONE 12000" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="IGET ONE – 12000 PUFFS" cash="$45" card="$50" />
       <StockInfo available={23} />
@@ -298,7 +318,7 @@ function IgetBarPlusPage() {
   const kitFlavors = ["Blackberry Ice","Blackberry Pineapple Orange","Cherry Pomegranate","Double Apple","Grape Ice","Lemonade Monster","Mango Monster","Passion Fruit Blueberry Raspberry","Peach Lychee Lime Ice","Raspberry Grape Mango","Strawberry Kiwi Ice","Strawberry Raspberry","Strawberry Watermelon Ice"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #880e4f, #c2185b, #f06292)" emoji="🌸" label="IGET BAR PLUS S3 10K" />
+      <ProductHero img="/img-igetbarplus.webp" label="IGET BAR PLUS S3 10K" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="IGET BAR PLUS S3 10k POD" cash="$35" card="$40" note="Compatible with IGET BAR PLUS S3 10k kit" />
       <StockInfo available={26} />
@@ -315,7 +335,7 @@ function HqdPage() {
   const oos = ["Black Ice","Cola","Guava Ice","Kiwi Pineapple"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #37474f, #546e7a, #78909c)" emoji="⚡" label="HQD CUVIE SLICK" />
+      <ProductHero img="/img-hqd.webp" label="HQD CUVIE SLICK" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="HQD CUVIE SLICK – 6000 PUFFS" cash="$30" card="$35" />
       <StockInfo available={20} outOfStock={4} />
@@ -329,7 +349,7 @@ function SnowplusPage() {
   const oos = ["Jasmine Longjing Tea 茉莉龙井"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #1b5e20, #2e7d32, #66bb6a)" emoji="❄️" label="SNOWPLUS DASH" />
+      <ProductHero img="/img-snowplus.webp" label="SNOWPLUS DASH" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="SNOWPLUS DASH" cash="$30" card="$35" />
       <StockInfo available={30} outOfStock={1} />
@@ -350,7 +370,7 @@ function RelxCreatorPage() {
   const active = podInfo[activePod];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #1565c0, #1976d2, #fdd835)" emoji="🔷" label="RELX CREATOR" />
+      <ProductHero img="/img-relxcreator.jpg" label="RELX CREATOR" />
       <div style={{ background: "linear-gradient(135deg, #7b1fa2, #9c27b0)", borderRadius: 12, padding: "14px 18px", marginBottom: 16, color: "#fff", textAlign: "center", fontWeight: 700, fontSize: 14 }}>
         🎁 BUY 4 POD GET 1 FREE DEVICE
       </div>
@@ -393,7 +413,7 @@ function RelxSpartaPage() {
   const flavors = ["Blackberry 黑莓","Blackberry Pomegranate Cherry 黑莓石榴樱桃","Blueberry Splash 蓝莓汽水","Cherry Pomegranate 樱桃石榴","Double Apple 双苹果","Fresh Mint 清新薄荷","Iced Cola 冰可乐","Lemon Lime Bitters 柠檬青柠苦酒","Milk Strawberry Lollipop 牛奶草莓棒棒糖","Peach Strawberry 蜜桃草莓","Pineapple 菠萝","Rainbow Candy 彩虹糖","Smooth Mango 顺滑芒果","Strawberry Kiwi 草莓奇异果","Strawberry Lollipop 草莓棒棒糖","Strawberry Raspberry 草莓树莓","Strawberry Watermelon 草莓西瓜","Triple Berry 三重莓果","Watermelon Chill 清凉西瓜","Watermelon Kiwi 西瓜奇异果"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #b71c1c, #c62828, #e53935)" emoji="⚔️" label="SPARTA 18000" />
+      <ProductHero img="/img-relxsparta.webp" label="SPARTA 18000" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="RELX SPARTA 18000" cash="$45" card="$50" />
       <StockInfo available={20} />
@@ -406,7 +426,7 @@ function AlfakherPage() {
   const flavors = ["Black Currant","Blue Razz Blast","Blueberry Mint","Blueberry Sour Raspberry","Cherry Ice","Grape","Grape Mint","Gum Mint","Ice Blue","Lemon Mint","Menthol","Mint","Orange Mint","Peach Ice","Strawberry Cherry","Two Apple","Watermelon Lime"];
   return (
     <div>
-      <ProductHero gradient="linear-gradient(135deg, #e65100, #f57c00, #ffa726)" emoji="👑" label="ALFAKHER" />
+      <ProductHero img="/img-alfakher.webp" label="ALFAKHER" />
       <PromoBar text="BUY 2 GET $5 OFF  ·  BUY 3 GET $10 OFF  ·  CASH $5 OFF" color="orange" />
       <DetailHeader name="ALFAKHER" cash="$45" card="$50" tag="NEW" />
       <StockInfo available={17} />
@@ -457,17 +477,17 @@ function HomePage({ navigate }) {
 
 function VapePage({ navigate }) {
   const products = [
-    { id: "clearance", name: "CLEARANCE", cash: "$15–$20", tag: "SALE" },
-    { id: "ingot", name: "ALI BARBAR – INGOT 9000", cash: "$43", card: "$48" },
-    { id: "iceadjust", name: "ALI BARBAR – ICE ADJUST 12000", cash: "$45", card: "$50" },
-    { id: "igetbarpro", name: "IGET BAR PRO", cash: "$43", card: "$48" },
-    { id: "igetone", name: "IGET ONE", cash: "$45", card: "$50" },
-    { id: "igetbarplus", name: "IGET BAR PLUS S3 10K KIT/POD", cash: "$35–45", card: "$40–50" },
-    { id: "hqd", name: "HQD CUVIE SLICK", cash: "$30", card: "$35" },
-    { id: "snowplus", name: "SNOWPLUS DASH", cash: "$30", card: "$35" },
-    { id: "relxcreator", name: "RELX CREATOR DEVICE/POD", cash: "$25/$30", card: "$25/$30" },
-    { id: "relxsparta", name: "RELX SPARTA 18000", cash: "$45", card: "$50" },
-    { id: "alfakher", name: "ALFAKHER", cash: "$45", card: "$50", tag: "NEW" },
+    { id: "clearance", name: "CLEARANCE", cash: "$15–$20", tag: "SALE", img: "/img-clearance.png" },
+    { id: "ingot", name: "ALI BARBAR – INGOT 9000", cash: "$43", card: "$48", img: "/img-ingot.webp" },
+    { id: "iceadjust", name: "ALI BARBAR – ICE ADJUST 12000", cash: "$45", card: "$50", img: "/img-iceadjust.webp" },
+    { id: "igetbarpro", name: "IGET BAR PRO", cash: "$43", card: "$48", img: "/img-igetbarpro.jpg" },
+    { id: "igetone", name: "IGET ONE", cash: "$45", card: "$50", img: "/img-igetone.webp" },
+    { id: "igetbarplus", name: "IGET BAR PLUS S3 10K KIT/POD", cash: "$35–45", card: "$40–50", img: "/img-igetbarplus.webp" },
+    { id: "hqd", name: "HQD CUVIE SLICK", cash: "$30", card: "$35", img: "/img-hqd.webp" },
+    { id: "snowplus", name: "SNOWPLUS DASH", cash: "$30", card: "$35", img: "/img-snowplus.webp" },
+    { id: "relxcreator", name: "RELX CREATOR DEVICE/POD", cash: "$25/$30", card: "$25/$30", img: "/img-relxcreator.jpg" },
+    { id: "relxsparta", name: "RELX SPARTA 18000", cash: "$45", card: "$50", img: "/img-relxsparta.webp" },
+    { id: "alfakher", name: "ALFAKHER", cash: "$45", card: "$50", tag: "NEW", img: "/img-alfakher.webp" },
   ];
   return (
     <div>
